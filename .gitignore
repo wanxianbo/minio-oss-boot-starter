@@ -26,6 +26,8 @@ proguard/
 *.lck
 /out/production/
 */out/production/
+/target
+/*/target
 
 checkout.cmd
 
