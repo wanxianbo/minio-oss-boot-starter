@@ -1,0 +1,58 @@
+{
+  "groups": [
+    {
+      "name": "minio",
+      "type": "com.wanxianbo.oss.minio.config.MinioProperties",
+      "sourceType": "com.wanxianbo.oss.minio.config.MinioProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "minio.bucket",
+      "type": "java.lang.String",
+      "sourceType": "com.wanxianbo.oss.minio.config.MinioProperties"
+    },
+    {
+      "name": "minio.endpoint",
+      "type": "java.lang.String",
+      "sourceType": "com.wanxianbo.oss.minio.config.MinioProperties"
+    },
+    {
+      "name": "minio.key",
+      "type": "java.lang.String",
+      "sourceType": "com.wanxianbo.oss.minio.config.MinioProperties"
+    },
+    {
+      "name": "minio.policy-actions",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.wanxianbo.oss.minio.config.MinioProperties"
+    },
+    {
+      "name": "minio.public-bucket",
+      "type": "java.lang.String",
+      "sourceType": "com.wanxianbo.oss.minio.config.MinioProperties"
+    },
+    {
+      "name": "minio.public-policy-actions",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.wanxianbo.oss.minio.config.MinioProperties"
+    },
+    {
+      "name": "minio.region",
+      "type": "java.lang.String",
+      "sourceType": "com.wanxianbo.oss.minio.config.MinioProperties",
+      "defaultValue": "cn-nanchang-1"
+    },
+    {
+      "name": "minio.secret",
+      "type": "java.lang.String",
+      "sourceType": "com.wanxianbo.oss.minio.config.MinioProperties"
+    },
+    {
+      "name": "minio.token-duration",
+      "type": "java.time.Duration",
+      "sourceType": "com.wanxianbo.oss.minio.config.MinioProperties"
+    }
+  ],
+  "hints": []
+}

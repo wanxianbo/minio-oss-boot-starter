@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.wanxianbo.oss.minio.MinioOssApi
+  com.wanxianbo.oss.minio.config.MinioOssAutoConfig
