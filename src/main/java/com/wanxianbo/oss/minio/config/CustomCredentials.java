@@ -2,13 +2,12 @@ package com.wanxianbo.oss.minio.config;
 
 import io.minio.credentials.Credentials;
 import io.minio.messages.ResponseDate;
-import org.jetbrains.annotations.NotNull;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.time.ZonedDateTime;
-import java.util.Objects;
 
 /**
  * <p>
@@ -18,6 +17,7 @@ import java.util.Objects;
  * @author wanxinabo
  * @date 2021/7/26
  */
+@Root(name = "Credentials", strict = false)
 public class CustomCredentials extends Credentials {
 
     private final ResponseDate expirationDate;

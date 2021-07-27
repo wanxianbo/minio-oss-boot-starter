@@ -111,7 +111,7 @@ public class CustomAssumeRoleProvider extends AssumeRoleBaseProvider {
 
     @Override
     protected Class<? extends AssumeRoleBaseProvider.Response> getResponseClass() {
-        return AssumeRoleProvider.AssumeRoleResponse.class;
+        return CustomAssumeRoleResponse.class;
     }
 
     /**
@@ -119,12 +119,12 @@ public class CustomAssumeRoleProvider extends AssumeRoleBaseProvider {
      */
     @Root(name = "AssumeRoleResponse", strict = false)
     @Namespace(reference = "https://sts.amazonaws.com/doc/2011-06-15/")
-    public static class AssumeRoleResponse implements AssumeRoleBaseProvider.Response {
+    public static class CustomAssumeRoleResponse implements AssumeRoleBaseProvider.Response {
         @Path(value = "AssumeRoleResult")
         @Element(name = "Credentials")
-        private Credentials credentials;
+        private CustomCredentials credentials;
 
-        public Credentials getCredentials() {
+        public CustomCredentials getCredentials() {
             return credentials;
         }
     }
