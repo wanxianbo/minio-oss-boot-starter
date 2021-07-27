@@ -2,6 +2,7 @@ package com.wanxianbo.oss.minio;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.io.ByteSource;
 import com.wanxianbo.oss.minio.config.CustomAssumeRoleProvider;
 import com.wanxianbo.oss.minio.config.CustomCredentials;
@@ -15,14 +16,12 @@ import io.minio.http.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Nullable;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.Base64;
@@ -38,7 +37,6 @@ import static java.util.Optional.ofNullable;
  * @author wanxinabo
  * @date 2021/7/26
  */
-@EnableConfigurationProperties(value = MinioProperties.class)
 @Slf4j
 public class MinioOssApi {
 
@@ -70,14 +68,13 @@ public class MinioOssApi {
         Statement.StatementBuilder statementBuilder = Statement.builder()
                 .sid("Default_Client_Policy").effect("Allow");
         properties.getPolicyActions().forEach(statementBuilder::act);
-        statementBuilder.resource(String.format("arn:aws:s3:::%s/*", properties.getBucket()));
+        statementBuilder.resource(Lists.newArrayList(String.format("arn:aws:s3:::%s/*", properties.getBucket())));
         Statement.StatementBuilder publicStatementBuilder = Statement.builder()
                 .sid("Default_Client_Policy_Public").effect("Allow");
         properties.getPublicPolicyActions().forEach(publicStatementBuilder::act);
-        statementBuilder.resource(String.format("arn:aws:s3:::%s/*", properties.getPublicBucket()));
+        statementBuilder.resource(Lists.newArrayList(String.format("arn:aws:s3:::%s/*", properties.getPublicBucket())));
         builder.state(statementBuilder.build())
                 .state(publicStatementBuilder.build()).build().policyString();
-
     }
 
     public MinioOssToken temporaryOssToken() {
@@ -215,6 +212,7 @@ public class MinioOssApi {
                 .bucket(nullableBucket(bucketName))
                 .object(objectName);
         ofNullable(contentType).ifPresent(builder::contentType);
+
         try {
             return client.putObject(builder.build());
         } catch (ErrorResponseException e) {
@@ -231,30 +229,26 @@ public class MinioOssApi {
 
 
     public static void main(String[] args) throws Exception {
-        MinioClient minioClient = MinioClient.builder().endpoint("http://192.168.59.128:9011/")
-                .credentials("minioadmin", "minioadmin")
-                .region("cn-nanchang-1")
-                .build();
-// 6WFzEtjjqdrE4puU9mGz D6kDtnFL6THVvLXr98ioLgLJYLq9auFzMNt
-//        minioClient.uploadObject(UploadObjectArgs.builder()
-//                .bucket("private-bucket")
-//                .object("test-demo")
-//                .filename("C:\\Users\\Dell\\Pictures\\Camera Roll\\45d56467c81347819a1e1a0a252373e1!400x400.jpeg")
-//                .build());
+        MinioProperties properties = new MinioProperties();
+        properties.setKey("6WFzEtjjqdrE4puU9mGz");
+        properties.setSecret("D6kDtnFL6THVvLXr98ioLgLJYLq9auFzMNt");
+        properties.setBucket("private-bucket");
+        properties.setPublicBucket("public-bucket");
+        properties.setEndpoint("http://192.168.59.128:9011");
+        properties.setRegion("cn-nanchang-1");
+        properties.setTokenDuration(Duration.ofMinutes(15));
+        properties.setPolicyActions(Lists.newArrayList("s3:Get*"));
+        properties.setPublicPolicyActions(Lists.newArrayList("s3:Get*", "s3:PutObject", "s3:PutObjectRetention"));
+        MinioOssApi minioOssApi = new MinioOssApi(properties);
 
-        // 在获取一下
-//        String url = minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-//                .method(Method.GET)
-//                .bucket("public-bucket")
-//                .object("test-demo")
-//                .build());
-
-                String url = minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-                .method(Method.GET)
-                .bucket("private-bucket")
-                .object("test-demo")
-                .build());
-
+        // 生成url测试
+        String url = minioOssApi.presignedObjectUrl("test-demo", "private-bucket", Duration.ofMinutes(5));
         System.out.println(url);
+        // upload文件测试
+        minioOssApi.uploadData(new BufferedInputStream(Files.newInputStream(Paths.get("C:\\Users\\Dell\\Pictures\\Camera Roll\\Snipaste_2021-05-12_15-32-34.png"))), "test-demo-02");
+        // down文件测试
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        minioOssApi.downloadData(outputStream, "test-demo-02","private-bucket");
+        System.out.println(outputStream.toByteArray().length);
     }
 }
