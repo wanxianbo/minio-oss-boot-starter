@@ -38,7 +38,7 @@ public class Statement {
 
     private String effect;
 
-    private String resource;
+    private List<String> resource;
 
     @Singular("act")
     private List<String> action;
@@ -47,7 +47,7 @@ public class Statement {
         return effect;
     }
 
-    public String getResource() {
+    public List<String> getResource() {
         return resource;
     }
 
