@@ -73,7 +73,7 @@ public class MinioOssApi {
                 .sid("Default_Client_Policy_Public").effect("Allow");
         properties.getPublicPolicyActions().forEach(publicStatementBuilder::act);
         statementBuilder.resource(Lists.newArrayList(String.format("arn:aws:s3:::%s/*", properties.getPublicBucket())));
-        builder.state(statementBuilder.build())
+        policy = builder.state(statementBuilder.build())
                 .state(publicStatementBuilder.build()).build().policyString();
     }
 
@@ -230,25 +230,26 @@ public class MinioOssApi {
 
     public static void main(String[] args) throws Exception {
         MinioProperties properties = new MinioProperties();
-        properties.setKey("6WFzEtjjqdrE4puU9mGz");
-        properties.setSecret("D6kDtnFL6THVvLXr98ioLgLJYLq9auFzMNt");
+        properties.setKey("admin");
+        properties.setSecret("7421.*aA");
         properties.setBucket("private-bucket");
         properties.setPublicBucket("public-bucket");
-        properties.setEndpoint("http://192.168.59.128:9011");
+        properties.setEndpoint("http://182.61.42.24:9000");
         properties.setRegion("cn-nanchang-1");
         properties.setTokenDuration(Duration.ofMinutes(15));
         properties.setPolicyActions(Lists.newArrayList("s3:Get*"));
         properties.setPublicPolicyActions(Lists.newArrayList("s3:Get*", "s3:PutObject", "s3:PutObjectRetention"));
         MinioOssApi minioOssApi = new MinioOssApi(properties);
 
-        // 生成url测试
-        String url = minioOssApi.presignedObjectUrl("test-demo", "private-bucket", Duration.ofMinutes(5));
-        System.out.println(url);
         // upload文件测试
-        minioOssApi.uploadData(new BufferedInputStream(Files.newInputStream(Paths.get("C:\\Users\\Dell\\Pictures\\Camera Roll\\Snipaste_2021-05-12_15-32-34.png"))), "test-demo-02");
+        minioOssApi.uploadData(new BufferedInputStream(Files.newInputStream(Paths.get("C:\\Users\\taopan\\Pictures\\Camera Roll\\Snipaste_2023-01-03_11-22-31.png"))), "test-demo-02.png");
         // down文件测试
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        minioOssApi.downloadData(outputStream, "test-demo-02","private-bucket");
+        minioOssApi.downloadData(outputStream, "test-demo-02.png","private-bucket");
         System.out.println(outputStream.toByteArray().length);
+
+        // 生成url测试
+        String url = minioOssApi.presignedObjectUrl("test-demo-02.png", "private-bucket", Duration.ofMinutes(5));
+        System.out.println(url);
     }
 }

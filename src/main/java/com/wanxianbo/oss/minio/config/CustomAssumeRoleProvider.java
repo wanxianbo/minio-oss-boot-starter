@@ -4,8 +4,6 @@ import io.minio.Digest;
 import io.minio.Signer;
 import io.minio.Time;
 import io.minio.credentials.AssumeRoleBaseProvider;
-import io.minio.credentials.AssumeRoleProvider;
-import io.minio.credentials.Credentials;
 import okhttp3.*;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Namespace;
